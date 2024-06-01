@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Greenville Car Tracker</title>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+        <style>
+            body {
+                font-family: 'Roboto', sans-serif;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: #ffffff;
+                margin: 0;
+                padding: 0;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            h1 {
+                text-align: center;
+                font-size: 2.5rem;
+                margin-top: 2rem;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            }
+
+            #searchContainer {
+                width: 100%;
+                max-width: 600px;
+                margin: 2rem auto;
+                padding: 0 1rem;
+            }
+
+            #searchbar {
+                width: 100%;
+                padding: 15px;
+                font-size: 1rem;
+                border: none;
+                border-radius: 30px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                outline: none;
+                transition: box-shadow 0.3s;
+            }
+
+            #searchbar:focus {
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            }
+
+            #results {
+                width: 100%;
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 0 1rem;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 1.5rem;
+            }
+
+            .car {
+                background-color: rgba(255, 255, 255, 0.1);
+                border-radius: 15px;
+                padding: 1.5rem;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                backdrop-filter: blur(10px);
+                transition: transform 0.3s, box-shadow 0.3s;
+            }
+
+            .car:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            }
+
+            h3 {
+                margin: 0 0 1rem;
+                font-size: 1.25rem;
+                text-align: center;
+            }
+
+            ul {
+                list-style-type: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            li {
+                margin-bottom: 0.5rem;
+                font-weight: 300;
+            }
+
+            #noResults {
+                text-align: center;
+                font-size: 1.25rem;
+                margin-top: 2rem;
+                font-style: italic;
+                opacity: 0.8;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Greenville Car Tracker</h1>
+        <div id="searchContainer">
+            <input type="text" id="searchbar" placeholder="Search by car model, year, or brand...">
+        </div>
+        <div id="results">
+            
+        </div>
+
+        <script>
+            function $(e){return document.getElementById(e)}
+
+            let createCard = document.createElement('span');
+            createCard.id="createCard"
+            createCard.classList.add('car');
+            createCard.innerHTML="<h1>Add/Remove</h1>"
+            createCard.onclick=()=>{
+                history.pushState({}, '', location.href);
+                location.replace('./new/')
+            }
+
+            function startsWithOrIncludes(s, t) {
+                s = s.toLowerCase();
+                t = t.toLowerCase();
+                return s.startsWith(t) || s.includes(t);
+            }
+
+            const cars = [];
+
+            function userTyped(){
+                let input = $('searchbar').value;
+
+                let indexesMatched = [];
+                for (let car of cars){
+                    if (startsWithOrIncludes(car.name, input)){
+                        indexesMatched.push(cars.indexOf(car));
+                    }
+                }
+
+                if (indexesMatched.length == 0){
+                    noResults();
+                } else{
+                    $('results').innerHTML = '';
+                    for (let i of indexesMatched){
+                        let car = cars[i];
+                        
+                        let name = document.createElement('h3');
+                        name.innerHTML = car.name;
+
+                        let details = document.createElement('ul');
+                        details.innerHTML = `<li><strong>Trim:</strong> ${car.trim}</li><li><strong>Colour:</strong> ${car.colour}</li><li><strong>Rims:</strong> ${car.rims}</li>`;
+
+                        let container = document.createElement('span');
+                        container.classList.add('car');
+                        container.append(name);
+                        container.append(details);
+
+                        $('results').append(container);
+                    }
+                    $('results').append(createCard)
+                }
+            }
+
+            function noResults(){
+                $('results').innerHTML = '<p id="noResults">No results found</p>';
+                $('results').append(createCard)
+            }
+
+            function displayAllCars() {
+                $('results').innerHTML = '';
+                for (let car of cars){
+                    let name = document.createElement('h3');
+                    name.innerHTML = car.name;
+
+                    let details = document.createElement('ul');
+                    details.innerHTML = `<li><strong>Trim:</strong> ${car.trim}</li><li><strong>Colour:</strong> ${car.colour}</li><li><strong>Rims:</strong> ${car.rims}</li>`;
+
+                    let container = document.createElement('span');
+                    container.classList.add('car');
+                    container.append(name);
+                    container.append(details);
+
+                    $('results').append(container);
+                }
+                $('results').append(createCard)
+            }
+            
+            function setRemovable() {
+                let previousAttempts = localStorage.getItem('attempts');
+                previousAttempts = previousAttempts ? JSON.parse(previousAttempts) : [];
+                console.log(previousAttempts);
+                if (previousAttempts.length > 0) {
+                    for (let i = 0; i < previousAttempts.length; i++) {
+                        let toPush = {
+                            name: previousAttempts[i].name,
+                            trim: previousAttempts[i].trim,
+                            colour: previousAttempts[i].colour,
+                            rims: previousAttempts[i].rims
+                        };
+                        cars.push(toPush)
+                    }
+                }
+            }
+
+            setRemovable()
+            userTyped();
+
+            $('searchbar').addEventListener('input', userTyped);
+        </script>
+    </body>
+</html>

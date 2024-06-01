@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Add Cars</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div id="createCar" class="container">
+            <h1>Save Vehicle</h1>
+            <p>This saves a vehicle to your device. These changes do not save for everyone else.</p>
+            <hr>
+            <label for="input1" alt="blud think about it dense cabbage">Vehicle Name</label>
+            <input type="text" id="input1" placeholder="Enter the vehicle's name (not like betty or sm stupid shit, sm like 2020 Overland Apache)">
+
+            <label for="input2" alt="vehicle trim">Vehicle Trim</label>
+            <input type="text" id="input2" placeholder="Enter the vehicle's trim">
+
+            <label for="input3" alt="colour of car">Vehicle Colour</label>
+            <input type="text" id="input3" placeholder="Enter the vehicle's colour">
+
+            <label for="input4" alt="rim name">Vehicle Rims</label>
+            <input type="text" id="input4" placeholder="Enter the vehicle's rims' name">
+            <br>
+            <br>
+            <hr>
+
+            <button onclick="saveToLocalStorage()">Save Locally</button>
+            <button id="back" onclick="back()">Back</button><br>
+            <button id="switchMode" onclick="switchMode()">Remove Car</button>
+        </div>
+        <div id="removeCar" class="container">
+            <h1>Remove Vehicle</h1>
+            <p>This deletes a vehicle from your device. These changes do not save for everyone else.</p>
+            <hr><br>
+            <div id="listOCars">
+                No cars saved.
+            </div>
+            <br>
+            <button id="back" onclick="switchMode()">Back</button>
+        </div>
+        <!--Scripts-->
+        <script src="script.js"></script>
+    </body>
+</html>
