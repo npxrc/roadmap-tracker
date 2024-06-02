@@ -185,16 +185,16 @@
             }
             
             function setRemovable() {
-                let previousAttempts = localStorage.getItem('attempts');
-                previousAttempts = previousAttempts ? JSON.parse(previousAttempts) : [];
-                console.log(previousAttempts);
-                if (previousAttempts.length > 0) {
-                    for (let i = 0; i < previousAttempts.length; i++) {
+                let previouscars = localStorage.getItem('cars');
+                previouscars = previouscars ? JSON.parse(previouscars) : [];
+                console.log(previouscars);
+                if (previouscars.length > 0) {
+                    for (let i = 0; i < previouscars.length; i++) {
                         let toPush = {
-                            name: previousAttempts[i].name,
-                            trim: previousAttempts[i].trim,
-                            colour: previousAttempts[i].colour,
-                            rims: previousAttempts[i].rims
+                            name: previouscars[i].name,
+                            trim: previouscars[i].trim,
+                            colour: previouscars[i].colour,
+                            rims: previouscars[i].rims
                         };
                         cars.push(toPush)
                     }

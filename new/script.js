@@ -16,24 +16,24 @@ function saveToLocalStorage() {
     }
 
     // Retrieve existing data from local storage
-    let previousAttempts = localStorage.getItem('attempts');
+    let previouscars = localStorage.getItem('cars');
 
     // Parse existing data as JSON or initialize an empty array
-    previousAttempts = previousAttempts ? JSON.parse(previousAttempts) : [];
+    previouscars = previouscars ? JSON.parse(previouscars) : [];
 
     // Create a new attempt object
-    const newAttempt = {
+    const newcar = {
         name: input1Value,
         trim: input2Value,
-        colour: input3Value,
-        rims: input4Value
+        rims: input3Value,
+        colour: input4Value
     };
 
     // Add the new attempt to the array
-    previousAttempts.push(newAttempt);
+    previouscars.push(newcar);
 
     // Save the updated array back to local storage
-    localStorage.setItem('attempts', JSON.stringify(previousAttempts));
+    localStorage.setItem('cars', JSON.stringify(previouscars));
 
     alert('Saved Vehicle locally!');
     $('input1').value='';
@@ -65,17 +65,17 @@ function switchMode(){
 let removable = [];
 
 function setRemovable() {
-    let previousAttempts = localStorage.getItem('attempts');
-    previousAttempts = previousAttempts ? JSON.parse(previousAttempts) : [];
-    console.log(previousAttempts);
-    if (previousAttempts.length > 0) {
+    let previouscars = localStorage.getItem('cars');
+    previouscars = previouscars ? JSON.parse(previouscars) : [];
+    console.log(previouscars);
+    if (previouscars.length > 0) {
         $('listOCars').innerHTML = "";
-        for (let i = 0; i < previousAttempts.length; i++) {
+        for (let i = 0; i < previouscars.length; i++) {
             let toPush = {
-                "name": previousAttempts[i].name,
-                "trim": previousAttempts[i].trim,
-                "colour": previousAttempts[i].colour,
-                "rims": previousAttempts[i].rims
+                "name": previouscars[i].name,
+                "trim": previouscars[i].trim,
+                "colour": previouscars[i].colour,
+                "rims": previouscars[i].rims
             };
 
             let page = document.createElement('div');
@@ -98,16 +98,16 @@ function setRemovable() {
 }
 setRemovable()
 function removeAttempt(index) {
-    let previousAttempts = localStorage.getItem('attempts');
-    previousAttempts = previousAttempts ? JSON.parse(previousAttempts) : [];
+    let previouscars = localStorage.getItem('cars');
+    previouscars = previouscars ? JSON.parse(previouscars) : [];
     
     // Remove the attempt at the specified index
-    previousAttempts.splice(index, 1);
+    previouscars.splice(index, 1);
 
     // Save the updated array back to local storage
-    localStorage.setItem('attempts', JSON.stringify(previousAttempts));
+    localStorage.setItem('cars', JSON.stringify(previouscars));
 
-    // Update the displayed attempts
+    // Update the displayed cars
     localStorage.setItem('toRemove','yes')
     location.reload()
 }
