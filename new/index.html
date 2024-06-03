@@ -13,8 +13,11 @@
             <h2>Add New Vehicle</h2>
             <p>Add a new vehicle to your personal Greenville collection. These changes are saved locally on your device.</p>
             <hr>
+
+            <label for="year">Vehicle Year</label>
+            <input type="text" id="year" placeholder="The year...">
             <label for="input1">Vehicle Name</label>
-            <input type="text" id="input1" placeholder="e.g., 2022 Celestial Type-5">
+            <input type="text" id="input1" placeholder="e.g., Celestial Type-5">
 
             <label for="input2">Vehicle Trim</label>
             <input type="text" id="input2" placeholder="e.g., Plaid+">
@@ -39,7 +42,28 @@
             <button id="back" onclick="switchMode()">Add New Vehicle</button>
         </div>
         <img id="roadImage" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1600' height='198'%3E%3Crect width='1600' height='198' fill='%23333'/%3E%3Cpath d='M0 99L1600 99' stroke='%23FFF' stroke-width='4' stroke-dasharray='16 16'/%3E%3Cpath d='M0 184L1600 184M0 14L1600 14' stroke='%23FFF' stroke-width='8'/%3E%3C/svg%3E" alt="Road">
-
+        <div id="credits">
+            <a href="mailto:neilpatrao@duck.com">Made by Neil Patrao</a>
+        </div>
+        <style>
+            @keyframes rotate2 {
+                0%{
+                    transform: rotateY(0deg);
+                }
+                100%{
+                    transform: rotateY(360deg);
+                }
+            }
+            #credits{
+                position: absolute;
+                z-index: 1000;
+                bottom: 0;
+                right: 0;
+                margin: 1vh;
+                animation: rotate2 5s infinite linear forwards;
+                color: white;
+            }
+        </style>
         <!--Scripts-->
         <script src="script.js"></script>
     </body>

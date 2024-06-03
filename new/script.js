@@ -2,11 +2,13 @@ function $(e){return document.getElementById(e)}
 
 function saveToLocalStorage() {
     // Get values from input fields
+    const year = $('year').value;
     const input1Value = $('input1').value;
     const input2Value = $('input2').value;
     const input3Value = $('input3').value;
     const input4Value = $('input4').value;
     if (
+        (year.length!==4||isNaN(Math.floor(year)))||
         (input1Value.trim()==""||input1Value==""||input1Value.trim().length<5)||
         (input2Value.trim()==""||input2Value=="")||
         (input3Value.trim()==""||input3Value==""||input3Value.trim().length<3)||
@@ -24,7 +26,7 @@ function saveToLocalStorage() {
 
     // Create a new attempt object
     const newcar = {
-        name: input1Value,
+        name: `${year} ${input1Value}`,
         trim: input2Value,
         rims: input3Value,
         colour: input4Value
@@ -37,6 +39,7 @@ function saveToLocalStorage() {
     localStorage.setItem('cars', JSON.stringify(previouscars));
 
     alert('Saved Vehicle locally!');
+    $('year').value='';
     $('input1').value='';
     $('input2').value='';
     $('input4').value='';

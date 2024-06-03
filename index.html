@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Greenville Car Tracker</title>
+        <title>Roadmap Dealership Tracker</title>
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
         <style>
             body {
@@ -21,7 +21,7 @@
             h1 {
                 text-align: center;
                 font-size: 2.5rem;
-                margin-top: 2rem;
+                margin: 2rem 0;
                 text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
             }
 
@@ -30,11 +30,13 @@
                 max-width: 600px;
                 margin: 2rem auto;
                 padding: 0 1rem;
+                position: relative;
             }
 
             #searchbar {
+                transform: translateX(-30px);
                 width: 100%;
-                padding: 15px;
+                padding: 15px 45px 15px 15px;
                 font-size: 1rem;
                 border: none;
                 border-radius: 30px;
@@ -45,6 +47,55 @@
 
             #searchbar:focus {
                 box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            }
+
+            #clearSearch {
+                position: absolute;
+                right: 25px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: none;
+                border: none;
+                color: #999;
+                font-size: 1.2rem;
+                cursor: pointer;
+                opacity: 0;
+                transition: opacity 0.3s;
+            }
+
+            #searchbar:valid + #clearSearch {
+                opacity: 1;
+            }
+
+            #yearFilter {
+                width: 100%;
+                max-width: 600px;
+                margin: 0 auto 1.5rem;
+                padding: 0 1rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            #yearFilter label {
+                font-size: 1.1rem;
+                font-weight: 500;
+            }
+
+            #yearFilter select {
+                padding: 10px;
+                font-size: 1rem;
+                border: none;
+                border-radius: 20px;
+                background-color: rgba(255, 255, 255, 0.2);
+                color: #fff;
+                outline: none;
+                cursor: pointer;
+                transition: background-color 0.3s;
+            }
+
+            #yearFilter select:hover {
+                background-color: rgba(255, 255, 255, 0.3);
             }
 
             #results {
@@ -63,12 +114,19 @@
                 padding: 1.5rem;
                 box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
                 backdrop-filter: blur(10px);
-                transition: transform 0.3s, box-shadow 0.3s;
+                transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+                cursor: pointer;
             }
 
             .car:hover {
-                transform: translateY(-5px);
+                transform: translateY(-5px) scale(1.02);
                 box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+                background-color: rgba(255, 255, 255, 0.2);
+            }
+
+            .car:active {
+                transform: translateY(0) scale(0.98);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             }
 
             h3 {
@@ -84,8 +142,22 @@
             }
 
             li {
-                margin-bottom: 0.5rem;
-                font-weight: 300;
+                margin-bottom: 0.75rem;
+                padding-left: 1.5rem;
+                position: relative;
+                line-height: 1.4;
+            }
+
+            li::before {
+                content: "•";
+                position: absolute;
+                left: 0;
+                color: rgba(255, 255, 255, 0.7);
+            }
+
+            strong {
+                font-weight: 500;
+                color: #fff;
             }
 
             #noResults {
@@ -108,17 +180,25 @@
         </style>
     </head>
     <body>
-        <h1>Greenville Car Tracker</h1>
+        <h1>Roadmap Dealership Tracker</h1>
         <div id="searchContainer">
             <input type="text" id="searchbar" placeholder="Search by car model, year, or brand...">
+            <button id="clearSearch" onclick="clearSearch()">×</button>
+        </div>
+        <div id="yearFilter">
+            <label for="sortOrder">Sort by Year:</label>
+            <select id="sortOrder" onchange="sortAndDisplayCars()">
+                <option value="desc">Newest to Oldest</option>
+                <option value="asc">Oldest to Newest</option>
+            </select>
         </div>
         <div id="results">
-            
+
         </div>
 
         <script>
             function $(e){return document.getElementById(e)}
-
+            
             let createCard = document.createElement('span');
             createCard.id="createCard"
             createCard.classList.add('car');
@@ -134,67 +214,76 @@
                 return s.startsWith(t) || s.includes(t);
             }
 
-            const cars = [];
+            let cars = []
 
-            function userTyped(){
-                let input = $('searchbar').value;
-
-                let indexesMatched = [];
-                for (let car of cars){
-                    if (startsWithOrIncludes(car.name, input)){
-                        indexesMatched.push(cars.indexOf(car));
-                    }
-                }
-
-                if (indexesMatched.length == 0){
-                    noResults();
-                } else{
-                    $('results').innerHTML = '';
-                    for (let i of indexesMatched){
-                        let car = cars[i];
-                        
-                        let name = document.createElement('h3');
-                        name.innerHTML = car.name;
-
-                        let details = document.createElement('ul');
-                        details.innerHTML = `<li><strong>Trim:</strong> ${car.trim}</li><li><strong>Colour:</strong> ${car.colour}</li><li><strong>Rims:</strong> ${car.rims}</li>`;
-
-                        let container = document.createElement('span');
-                        container.classList.add('car');
-                        container.append(name);
-                        container.append(details);
-
-                        $('results').append(container);
-                    }
-                    $('results').append(createCard)
-                }
+            function getYearFromName(name) {
+                let yearStr = name.split(' ')[0];
+                return parseInt(yearStr, 10);
             }
 
-            function noResults(){
-                $('results').innerHTML = '<p id="noResults">No results found</p>';
-                $('results').append(createCard)
+            function sortCarsByYear(order = 'desc') {
+                return cars.sort((a, b) => {
+                    let yearA = getYearFromName(a.name);
+                    let yearB = getYearFromName(b.name);
+                    return order === 'desc' ? yearB - yearA : yearA - yearB;
+                });
             }
 
-            function displayAllCars() {
+            function displayCars(carsToDisplay) {
                 $('results').innerHTML = '';
-                for (let car of cars){
+                for (let car of carsToDisplay) {
                     let name = document.createElement('h3');
                     name.innerHTML = car.name;
-                    name.attributes.setNamedItem('carName', car.name)
 
                     let details = document.createElement('ul');
                     details.innerHTML = `<li><strong>Trim:</strong> ${car.trim}</li><li><strong>Colour:</strong> ${car.colour}</li><li><strong>Rims:</strong> ${car.rims}</li>`;
-                    details.attributes.setNamedItem('carName', car.name)
 
                     let container = document.createElement('span');
                     container.classList.add('car');
                     container.append(name);
                     container.append(details);
-                    container.attributes.setNamedItem('carName', car.name)
+                    container.onclick = () => setSearchToCar(car.name);
 
                     $('results').append(container);
                 }
+            }
+
+            function sortAndDisplayCars() {
+                let order = $('sortOrder').value;
+                let sortedCars = sortCarsByYear(order);
+                displayCars(sortedCars);
                 $('results').append(createCard)
+            }
+
+            function userTyped(){
+                let input = $('searchbar').value;
+
+                if (!input) {
+                    sortAndDisplayCars();
+                    return;
+                }
+
+                let matchedCars = cars.filter(car => startsWithOrIncludes(car.name, input));
+
+                if (matchedCars.length == 0){
+                    noResults();
+                } else {
+                    displayCars(matchedCars);
+                }
+            }
+
+            function noResults(){
+                $('results').innerHTML = '<p id="noResults">No results found</p>';
+            }
+
+            function setSearchToCar(carName) {
+                $('searchbar').value = carName;
+                userTyped();
+            }
+
+            function clearSearch() {
+                $('searchbar').value = '';
+                sortAndDisplayCars();
             }
             
             function setRemovable() {
@@ -215,19 +304,31 @@
             }
 
             setRemovable()
-            userTyped();
-
+            sortAndDisplayCars();
             $('searchbar').addEventListener('input', userTyped);
-
-            window.addEventListener('click',(event)=>{
-                let target = event.target;
-                let parent = target.parentElement
-                let parentofparent = parent.parentElement
-                let parentofparentofparent = parentofparent.parentElement
-
-                console.log(event.target)
-            })
         </script>
+        <div id="credits">
+            <a href="mailto:neilpatrao@duck.com">Made by Neil Patrao</a>
+        </div>
+        <style>
+            @keyframes rotate2 {
+                0%{
+                    transform: rotateY(0deg);
+                }
+                100%{
+                    transform: rotateY(360deg);
+                }
+            }
+            #credits{
+                position: absolute;
+                z-index: 1000;
+                bottom: 0;
+                right: 0;
+                margin: 1vh;
+                animation: rotate2 5s infinite linear forwards;
+                color: white;
+            }
+        </style>
         <img id="roadImage" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1600' height='198'%3E%3Crect width='1600' height='198' fill='%23333'/%3E%3Cpath d='M0 99L1600 99' stroke='%23FFF' stroke-width='4' stroke-dasharray='16 16'/%3E%3Cpath d='M0 184L1600 184M0 14L1600 14' stroke='%23FFF' stroke-width='8'/%3E%3C/svg%3E" alt="Road">
     </body>
 </html>
