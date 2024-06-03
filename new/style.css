@@ -1,90 +1,159 @@
-@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display&family=Playfair+Display&display=swap');
-*{
-    transition: background-color 500ms ease;
-}
 body {
-    font-family: 'Red Hat Display', Arial, sans-serif;
+    font-family: 'Roboto', sans-serif;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     margin: 0;
     padding: 0;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
+    color: #333;
 }
-@media (prefers-color-scheme: light){
-    body{
-        background-color: rgb(146, 133, 129);
-    }
+
+h1 {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    font-size: 2.5rem;
+    color: #fff;
+    margin: 2rem 0;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .container {
-    background-color: #e9e7e7;
-    width: 30vw;
-    height: 60vh;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    width: 90%;
+    max-width: 500px;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
-    overflow-y: scroll;
+    margin-bottom: 2rem;
 }
 
-h1{
-    font-family: 'Playfair Display', sans-serif;
-    margin-top: -1%;
+p {
+    color: #fff;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    margin: 1.5rem 0;
 }
 
 label {
     display: block;
-    margin-top: 10px;
+    margin-top: 1rem;
+    color: #fff;
+    font-weight: 500;
+    text-align: left;
 }
 
 input {
     width: 100%;
-    padding: 8px;
-    margin-top: 5px;
+    padding: 12px;
+    margin-top: 0.5rem;
     box-sizing: border-box;
-}
-#useNow, #useTd{
-    margin-left: 5%;
-    width: 30%;
+    border: none;
+    border-radius: 30px;
+    font-size: 1rem;
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #333;
+    outline: none;
+    transition: background-color 0.3s, box-shadow 0.3s;
 }
 
-button, #rSwitchMode {
-    background-color: #4caf50;
-    color: #fff;
-    padding: 10px;
+input:focus {
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+button {
+    background-color: #fff;
+    color: #764ba2;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    padding: 12px 24px;
     border: none;
-    width: 10vw;
-    border-radius: 5px;
+    border-radius: 30px;
     cursor: pointer;
-    margin-top: 10px;
-    transition: background-color 200ms ease !important;
+    margin-top: 1.5rem;
+    transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-size: 1rem;
 }
-button:active, #rSwitchMode:active{
-    background-color: #409142;
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
-#switchMode, .remove{
-    background-color: #af4c4c;
+
+button:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-#switchMode:active, .remove:active{
-    background-color: #914040;
+
+#back {
+    background-color: rgba(255, 255, 255, 0.6);
+    color: #333;
+    margin-left: 1rem;
 }
-#back{
-    background-color: rgb(100,100,100);
+
+#switchMode {
+    background-color: #ff6b6b;
+    color: #fff;
+    width: 100%;
+    margin-top: 2rem;
 }
-#back:active{
-    background-color: rgb(130,130,130);
+
+#switchMode:hover {
+    background-color: #ff5252;
 }
-label{
+
+#listOCars {
+    text-align: left;
+    color: #fff;
+}
+
+.car-item {
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.car-info {
+    flex-grow: 1;
+}
+
+.remove {
+    background-color: #ff6b6b;
+    color: #fff;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 20px;
     cursor: pointer;
+    transition: background-color 0.3s;
+    margin-left: 1rem;
 }
-@media only screen and (max-width: 600px){
-    .container{
-        height: 70vh;
-        width: 100vw;
-    }
-    button{
-        width: 90vw;
-    }
+
+.remove:hover {
+    background-color: #ff5252;
+}
+
+#roadImage {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0.3;
+    filter: blur(10px);
+    z-index: -1;
+    pointer-events: none;
 }

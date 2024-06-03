@@ -1,4 +1,5 @@
 function $(e){return document.getElementById(e)}
+
 function saveToLocalStorage() {
     // Get values from input fields
     const input1Value = $('input1').value;
@@ -42,72 +43,48 @@ function saveToLocalStorage() {
     $('input3').value='';
     location.reload()
 }
+
 function back(){
     let toGo = document.createElement('a');
-	toGo.href = "../"
-	toGo.click()
+    toGo.href = "../"
+    toGo.click()
 }
 
-$('createCar').style.display="block";
-$('removeCar').style.display="none";
-let visible='create'
-function switchMode(){    
-    if (visible=='create'){
-        $('createCar').style.display="none";
-        $('removeCar').style.display="block";
-        visible='remove'
-    } else if (visible=='remove'){
-        $('createCar').style.display="block";
-        $('removeCar').style.display="none";
-        visible='create'
+function switchMode() {
+    if ($('createCar').style.display !== 'none') {
+        $('createCar').style.display = 'none';
+        $('removeCar').style.display = 'block';
+        displaySavedCars();
+    } else {
+        $('createCar').style.display = 'block';
+        $('removeCar').style.display = 'none';
     }
 }
-let removable = [];
 
-function setRemovable() {
-    let previouscars = localStorage.getItem('cars');
-    previouscars = previouscars ? JSON.parse(previouscars) : [];
-    console.log(previouscars);
-    if (previouscars.length > 0) {
-        $('listOCars').innerHTML = "";
-        for (let i = 0; i < previouscars.length; i++) {
-            let toPush = {
-                "name": previouscars[i].name,
-                "trim": previouscars[i].trim,
-                "colour": previouscars[i].colour,
-                "rims": previouscars[i].rims
-            };
+function displaySavedCars() {
+    let cars = JSON.parse(localStorage.getItem('cars')) || [];
+    let listHtml = cars.length > 0 ? '' : 'No vehicles saved yet.';
+    cars.forEach((car, index) => {
+        listHtml += `
+            <div class="car-item">
+                <div class="car-info">
+                    <strong>${car.name}</strong> - ${car.trim}
+                </div>
+                <button class="remove" onclick="removeCar(${index})">Remove</button>
+            </div>`;
+    });
+    $('listOCars').innerHTML = listHtml;
+}
 
-            let page = document.createElement('div');
-            page.innerHTML = `<p>${toPush.name} - ${toPush.trim} - ${toPush.colour} - ${toPush.rims}</p><hr>`;
-            
-            // Add a button to remove the specific attempt
-            let deleteButton = document.createElement('button');
-            deleteButton.textContent = 'Delete';
-            deleteButton.classList.add('remove')
-            deleteButton.addEventListener('click', function() {
-                removeAttempt(i);
-            });
+function removeCar(index) {
+    let cars = JSON.parse(localStorage.getItem('cars')) || [];
+    cars.splice(index, 1);
+    localStorage.setItem('cars', JSON.stringify(cars));
+    displaySavedCars();
+}
 
-            // Append the delete button to the page
-            page.appendChild(deleteButton);
-
-            $('listOCars').appendChild(page);
-        }
+window.onload = function() {
+    if (window.location.hash === '#manage') {
+        switchMode();
     }
-}
-setRemovable()
-function removeAttempt(index) {
-    let previouscars = localStorage.getItem('cars');
-    previouscars = previouscars ? JSON.parse(previouscars) : [];
-    
-    // Remove the attempt at the specified index
-    previouscars.splice(index, 1);
-
-    // Save the updated array back to local storage
-    localStorage.setItem('cars', JSON.stringify(previouscars));
-
-    // Update the displayed cars
-    localStorage.setItem('toRemove','yes')
-    location.reload()
-}
+};
