@@ -9,9 +9,9 @@ function saveToLocalStorage() {
     const input4Value = $('input4').value;
     if (
         (year.length!==4||isNaN(Math.floor(year)))||
-        (input1Value.trim()==""||input1Value==""||input1Value.trim().length<5)||
+        (input1Value.trim()==""||input1Value=="")||
         (input2Value.trim()==""||input2Value=="")||
-        (input3Value.trim()==""||input3Value==""||input3Value.trim().length<3)||
+        (input3Value.trim()==""||input3Value=="")||
         (input4Value.trim()==""||input4Value=="")
     ){
         alert('enter real shit bro')
@@ -38,13 +38,13 @@ function saveToLocalStorage() {
     // Save the updated array back to local storage
     localStorage.setItem('cars', JSON.stringify(previouscars));
 
-    alert('Saved Vehicle locally!');
+    new notif('Saved','Vehicle saved to local storage!').send()
     $('year').value='';
     $('input1').value='';
     $('input2').value='';
     $('input4').value='';
     $('input3').value='';
-    location.reload()
+    $('year').focus()
 }
 
 function back(){
@@ -91,3 +91,43 @@ window.onload = function() {
         switchMode();
     }
 };
+
+class notif {
+    constructor(title, body) {
+        this.title = title;
+        this.body = body;
+        let elem = document.createElement('div');
+        elem.classList.add('notif');
+        title = document.createElement('h3');
+        title.innerHTML = this.title+'<br>';
+        body = document.createElement('p');
+        body.innerHTML = this.body;
+        elem.appendChild(title);
+        elem.appendChild(body);
+
+        this.elem = elem;
+        this.title = title;
+        this.body = body;
+    }
+    send(timeout) {
+        $('notifs').appendChild(this.elem); // Fixed typo: changed "this.elems.notif" to "this.elem"
+        setTimeout(() => {
+            this.elem.classList.add('fade-out');
+            setTimeout(() => {
+                $('notifs').removeChild(this.elem);
+            }, 1000);
+        }, isNaN(timeout)?5000:(timeout*1000));
+        $('notifs').scrollTop = $('notifs').scrollHeight;
+    }
+    edit(newTitle, newMsg) {
+        if (newTitle!==null&&newTitle!==undefined){
+            this.title.innerHTML=newTitle
+        }
+        if (newMsg!==null&&newMsg!==undefined){
+            this.body.innerHTML=newMsg
+        }
+        this.elem.innerHTML=''
+        this.elem.appendChild(this.title)
+        this.elem.appendChild(this.body)
+    }
+}
